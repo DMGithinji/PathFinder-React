@@ -1,0 +1,17 @@
+.node {
+    margin: 0;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    outline: 1px solid rgb(61, 61, 61);
+    display: inline-block;
+    background: #fff;
+}
+
+.node-start{
+    background-color: rgb(139, 24, 24);
+}
+
+.node-finish{
+    background-color: rgb(53, 197, 48);
+}
