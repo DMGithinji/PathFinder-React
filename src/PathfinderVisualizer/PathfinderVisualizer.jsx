@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Node from './Node/Node'
 import './PathfinderVisualizer.scss';
+import {dijkstra, orderedShortestPath} from '../Algorithms/Dijkstras';
 
 
 const START_NODE_ROW = 10;
@@ -25,12 +26,40 @@ export default class PathfinderVisualizer extends Component {
     this.setState({grid});
   }
 
+  animateDijkstra(orderedVisitedNodes, nodesInShortestPath) {
+    for (let i = 0; i <= orderedVisitedNodes.length; i++) {
+      if (i === orderedVisitedNodes.length) {
+        setTimeout(() => {
+          this.animateShortestPath(nodesInShortestPath);
+        }, 10 * i);
+        return;
+      }
+      setTimeout(() => {
+        const node = orderedVisitedNodes[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className =
+          'node node-visited';
+      }, 10 * i);
+    }
+  }
+
+  visualizeDijkstra() {
+    const {grid} = this.state;
+    const startNode = grid[START_NODE_ROW][START_NODE_COL];
+    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
+    const nodesInShortestPathOrder = orderedShortestPath(finishNode);
+    console.log(visitedNodesInOrder, nodesInShortestPathOrder);
+  }
+
+
   render(){
     const {grid} = this.state;
 
     return (
       <div>
-        Pathfinder Visualizer
+        Pathfinder Visualizer <br/>
+
+        <button onClick={() => this.visualizeDijkstra()}>Visualize</button>
 
         {/* Render the 2D grid layout */}
         <div className="grid">
@@ -53,8 +82,6 @@ export default class PathfinderVisualizer extends Component {
             );
           })}
         </div>
-
-        
       </div>
     );
   }
@@ -69,6 +96,7 @@ const createNode = (col, row) => {
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
     distance: Infinity,
     isVisited: false,
+    previousNode: null,
   };
 };
 
@@ -83,5 +111,4 @@ const getInitialGrid = () => {
     grid.push(currentRow);
   }
   return grid;
-  
 };

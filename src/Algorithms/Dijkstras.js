@@ -10,7 +10,7 @@ export function dijkstra(grid, startNode, finishNode) {
     //create an array of all the nodes of which are unvisited
     const unvisitedNodes = getAllNodes(grid)
     //create an empty array to store a visited nodes in order in which they were visited
-    const OrderedVisitedNodes = [];
+    const orderedVisitedNodes = [];
 
     //while we havent checked all nodes
     while(!!unvisitedNodes.length) {
@@ -19,11 +19,11 @@ export function dijkstra(grid, startNode, finishNode) {
         //get the next closest node and mark it as visited then push it to VisitedArray
         const closestNode = unvisitedNodes.shift();
         closestNode.isVisited = true;
-        OrderedVisitedNodes.push(closestNode);
+        orderedVisitedNodes.push(closestNode);
 
         //if we get to finish node, return all the visited nodes
         if (closestNode === finishNode){
-            return OrderedVisitedNodes;
+            return orderedVisitedNodes;
         }
 
         //otherwise, get the next set of nodes and 
@@ -34,7 +34,7 @@ export function dijkstra(grid, startNode, finishNode) {
 
 }
 
-//gets all the nodes, node is an object with col and row properties
+//gets all the nodes
 function getAllNodes(grid) {
     const nodes = [];
     for (const row of grid) {
@@ -63,7 +63,7 @@ function getUnvisitedNeighbours (node, grid) {
     if (row > 0) neighbours.push(grid[row - 1][col]); //get upper neighbour
     if (row < grid.length-1) neighbours.push(grid[row+1][col]); //get lower neighbour
     if (col > 0) neighbours.push(grid[row][col-1]); //get left neighbour
-    if (col  < grid.length-1) neighbours.push(grid[row][col+1]); //get left neighbour
+    if (col  < grid[0].length-1) neighbours.push(grid[row][col+1]); //get left neighbour
     return neighbours.filter(neighbour=> !neighbour.isVisited); //return array of neighbour nodes that havent been visited
 }
 
