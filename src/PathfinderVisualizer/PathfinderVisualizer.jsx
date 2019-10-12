@@ -27,10 +27,12 @@ export default class PathfinderVisualizer extends Component {
   }
 
   animateDijkstra (visitedNodesInOrder){
-    for (let i = 1; i < visitedNodesInOrder.length; i++) {
-      const node = visitedNodesInOrder[i];
-      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
-    }
+    for (let i = 1; i < visitedNodesInOrder.length; i++) {    
+      setTimeout(()=>{
+        const node = visitedNodesInOrder[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+      }, 10 * i);
+    }    
   }
 
   visualizeDijkstra() {
