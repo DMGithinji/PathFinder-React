@@ -67,6 +67,8 @@ const createNode = (col, row) => {
     row,
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
+    distance: Infinity,
+    isVisited: false,
   };
 };
 
@@ -81,4 +83,5 @@ const getInitialGrid = () => {
     grid.push(currentRow);
   }
   return grid;
+  
 };
