@@ -26,19 +26,10 @@ export default class PathfinderVisualizer extends Component {
     this.setState({grid});
   }
 
-  animateDijkstra(orderedVisitedNodes, nodesInShortestPath) {
-    for (let i = 0; i <= orderedVisitedNodes.length; i++) {
-      if (i === orderedVisitedNodes.length) {
-        setTimeout(() => {
-          this.animateShortestPath(nodesInShortestPath);
-        }, 10 * i);
-        return;
-      }
-      setTimeout(() => {
-        const node = orderedVisitedNodes[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className =
-          'node node-visited';
-      }, 10 * i);
+  animateDijkstra (visitedNodesInOrder){
+    for (let i = 1; i < visitedNodesInOrder.length; i++) {
+      const node = visitedNodesInOrder[i];
+      document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
     }
   }
 
@@ -49,6 +40,7 @@ export default class PathfinderVisualizer extends Component {
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedShortestPath(finishNode);
     console.log(visitedNodesInOrder, nodesInShortestPathOrder);
+    this.animateDijkstra(visitedNodesInOrder);
   }
 
 
