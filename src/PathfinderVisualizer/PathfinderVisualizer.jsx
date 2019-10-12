@@ -6,7 +6,7 @@ import './PathfinderVisualizer.scss';
 const START_NODE_ROW = 10;
 const START_NODE_COL = 15;
 const FINISH_NODE_ROW = 10;
-const FINISH_NODE_COL = 35;
+const FINISH_NODE_COL = 45;
 const ROW_NUMBER = 20;
 const COLUMN_NUMBER = 52;
 
@@ -26,9 +26,7 @@ export default class PathfinderVisualizer extends Component {
   }
 
   render(){
-
     const {grid} = this.state;
-
 
     return (
       <div>
@@ -44,10 +42,10 @@ export default class PathfinderVisualizer extends Component {
                   return (
                     <Node
                       key={nodeIdx}
-                      row={row}>
                       col={col}
                       isFinish={isFinish}
-                      isStart={isStart}
+                      isStart={isStart}                      
+                      row={row}>
                     </Node>
                   );
                 })}
