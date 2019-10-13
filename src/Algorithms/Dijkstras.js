@@ -16,10 +16,10 @@ export function dijkstra(grid, startNode, finishNode) {
     while(!!unvisitedNodes.length) {
         //consistently sort all the nodes based on distance on each loop
         sortNodesByDistance(unvisitedNodes);
-        //get the next closest node and mark it as visited then push it to VisitedArray
-        const closestNode = unvisitedNodes.shift();
-        closestNode.isVisited = true;
-        orderedVisitedNodes.push(closestNode);
+        const closestNode = unvisitedNodes.shift(); //get the next closest node 
+        if (closestNode.isWall) continue; //if closest node is a wall, skip it
+        closestNode.isVisited = true; //mark closest node if not wall as visited 
+        orderedVisitedNodes.push(closestNode); //Add it to VisitedArray
 
         //if we get to finish node, return all the visited nodes
         if (closestNode === finishNode){
