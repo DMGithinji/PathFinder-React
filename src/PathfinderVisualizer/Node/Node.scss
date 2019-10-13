@@ -16,6 +16,9 @@
     background-color: rgb(53, 197, 48) !important;
 }
 
+.node-wall {
+    background-color: rgb(12, 53, 71);
+}
 
 .node-visited {
     animation-name: visitedAnimation;
@@ -60,22 +63,21 @@
     animation-iteration-count: 1;
     animation-fill-mode: forwards;
     animation-play-state: running;
-  }
-  
-  @keyframes shortestPath {
+}
+
+@keyframes shortestPath {
     0% {
-      transform: scale(0.6);
-      background-color: rgb(255, 254, 106);
+        transform: scale(0.6);
+        background-color: rgb(255, 254, 106);
     }
-  
+
     50% {
-      transform: scale(1.2);
-      background-color: rgb(255, 254, 106);
+        transform: scale(1.2);
+        background-color: rgb(255, 254, 106);
     }
-  
+
     100% {
-      transform: scale(1);
-      background-color: rgb(255, 254, 106);
+        transform: scale(1);
+        background-color: rgb(255, 254, 106);
     }
-  }
-  
+}
