@@ -26,8 +26,14 @@ export default class PathfinderVisualizer extends Component {
     this.setState({grid});
   }
 
-  animateDijkstra (visitedNodesInOrder){
-    for (let i = 1; i < visitedNodesInOrder.length; i++) {    
+  animateDijkstra (visitedNodesInOrder, nodesInShortestPathOrder){
+    for (let i = 1; i <= visitedNodesInOrder.length; i++) {
+      if (i === visitedNodesInOrder.length) {
+        setTimeout(() => {
+          this.animateShortestPath(nodesInShortestPathOrder);
+        }, 10 * i);
+        return;
+      }    
       setTimeout(()=>{
         const node = visitedNodesInOrder[i];
         document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
@@ -35,14 +41,25 @@ export default class PathfinderVisualizer extends Component {
     }    
   }
 
+
+  animateShortestPath(nodesInShortestPathOrder) {
+    for (let i = 1; i < nodesInShortestPathOrder.length; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
+      }, 50 * i);
+    }
+  }
+
+
   visualizeDijkstra() {
     const {grid} = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedShortestPath(finishNode);
-    console.log(visitedNodesInOrder, nodesInShortestPathOrder);
-    this.animateDijkstra(visitedNodesInOrder);
+    // console.log(visitedNodesInOrder, nodesInShortestPathOrder);
+    this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
 
 
