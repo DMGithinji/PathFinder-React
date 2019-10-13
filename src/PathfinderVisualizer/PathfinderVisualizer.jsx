@@ -5,7 +5,7 @@ import {dijkstra, orderedShortestPath} from '../Algorithms/Dijkstras';
 
 
 const START_NODE_ROW = 10;
-const START_NODE_COL = 10;
+const START_NODE_COL = 45;
 const FINISH_NODE_ROW = 18;
 const FINISH_NODE_COL = 50;
 const ROW_NUMBER = 20;
@@ -65,6 +65,11 @@ export default class PathfinderVisualizer extends Component {
 
   //Function to enable visualization of result ie shortest path found
   animateShortestPath(nodesInShortestPathOrder) {
+    if(nodesInShortestPathOrder[0] !== this.state.grid[START_NODE_ROW][START_NODE_COL]){
+      alert('No path available');
+    }
+    console.log(this.state.grid[FINISH_NODE_ROW][FINISH_NODE_COL]);
+    console.log(nodesInShortestPathOrder[0]);
     for (let i = 1; i < nodesInShortestPathOrder.length-1; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -83,7 +88,6 @@ export default class PathfinderVisualizer extends Component {
     // console.log(visitedNodesInOrder, nodesInShortestPathOrder);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
   }
-
 
   render(){
     const {grid, mouseIsPressed} = this.state;

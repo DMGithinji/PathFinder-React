@@ -19,6 +19,7 @@ export function dijkstra(grid, startNode, finishNode) {
         const closestNode = unvisitedNodes.shift(); //get the next closest node 
         if (closestNode.isWall) continue; //if closest node is a wall, skip it
         closestNode.isVisited = true; //mark closest node if not wall as visited 
+        if (closestNode.distance === Infinity) return orderedVisitedNodes; //if closest node is a wall, skip it
         orderedVisitedNodes.push(closestNode); //Add it to VisitedArray
 
         //if we get to finish node, return all the visited nodes
