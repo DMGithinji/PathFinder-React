@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import Node from './Node/Node';
 import './PathfinderVisualizer.scss';
 import {dijkstra, orderedShortestPath} from '../Algorithms/Dijkstras';
+// import Dropdown from 'react-bootstrap/Dropdown';
 
 const START_NODE_ROW = 10;
 const START_NODE_COL = 10;
@@ -23,7 +24,7 @@ export default class PathfinderVisualizer extends Component {
       startNodeIsPressed: false,
       finishNodeIsPressed: false,
       isVisualizing: false,
-      visualizersBeenReset: false,
+      visualizationBeenReset: true,
     };
   }
 
@@ -35,6 +36,7 @@ export default class PathfinderVisualizer extends Component {
   
   //When mouse is clicked, make node wall
   handleMousePress(row, col){
+    if (!this.state.visualizationBeenReset) return;
     if (this.state.isVisualizing) return;
 
     if (this.state.grid[row][col].isStart){
@@ -51,8 +53,8 @@ export default class PathfinderVisualizer extends Component {
 
   //When mouse enters node while pressed, make node wall
   handleMouseEnter(row, col){
+    if (!this.state.visualizationBeenReset) return;
     if (this.state.isVisualizing) return;
-
     if ((!this.state.mouseIsPressed) && (!this.state.startNodeIsPressed) && (!this.state.finishNodeIsPressed)) return; //if not pressed already, don't do anything
     if(this.state.startNodeIsPressed){
       this.handleMouseEnterWithStart(row, col);
@@ -70,6 +72,7 @@ export default class PathfinderVisualizer extends Component {
 
   //When user stops pressing, stop making walls
   handleStop(row, col){
+    if (!this.state.visualizationBeenReset) return;
     if (this.state.isVisualizing) return;
 
     this.setState({mouseIsPressed: false});
@@ -184,6 +187,7 @@ export default class PathfinderVisualizer extends Component {
     const nodesInShortestPathOrder = orderedShortestPath(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
     this.setState({isVisualizing: true});
+    this.setState({visualizationBeenReset: false});
   }
 
   //Generate Random Obstacle SetUp
@@ -192,16 +196,29 @@ export default class PathfinderVisualizer extends Component {
     randomGenerator = true;
     const grid = getInitialGrid();
     this.setState({grid});
-    this.minorResetGrid(grid)
+    this.minorResetGrid(grid);
+    this.setState({visualizationBeenReset: true});
   }
 
+  //Generate Random Obstacle SetUp
+  changeDensity(density){
+    if (this.state.isVisualizing) return;
+    randomGenerator = true;
+    defaultRandomWallGenerator = density;
+    const grid = getInitialGrid();
+    this.setState({grid});
+    this.minorResetGrid(grid);
+    this.setState({visualizationBeenReset: true});
+
+  }
   //Put Obstacles On or Off
   toggleObstacles(){
     if (this.state.isVisualizing) return;
     randomGenerator = !randomGenerator;
     const grid = getInitialGrid();
     this.setState({grid});
-    this.minorResetGrid(grid)
+    this.minorResetGrid(grid);
+    this.setState({visualizationBeenReset: true});
   }
 
   resetGrid(){
@@ -218,6 +235,7 @@ export default class PathfinderVisualizer extends Component {
         }
       }
     });
+    this.setState({visualizationBeenReset: true});
   }
 
   minorResetGrid(grid){
@@ -239,7 +257,7 @@ export default class PathfinderVisualizer extends Component {
     return (
       <div>
         <nav>
-        <div className="logo">
+        <div className="logo" onClick={() => this.resetGrid()}>
         PATH  <br/> FINDER 
         </div>
         <ul className="nav-links">{isVisualizing 
@@ -253,15 +271,24 @@ export default class PathfinderVisualizer extends Component {
         : <ul class="nav-links">
             <li onClick={() => this.visualizeDijkstra()}>Visualize</li> 
             <li onClick={() => this.resetGrid()}>Reset Grid</li>
-            <li onClick={() => this.changeObstacles()}>Change Obstacles</li>
-            <li onClick={() => this.toggleObstacles()}>Toggle Obstacles</li>
-
+            <li onClick={() => this.toggleObstacles()}>Toggle Obstacles</li>  
+            <label class="dropdown">
+              <div class="dd-button">
+                Obstacle Options
+              </div>
+              <input type="checkbox" class="dd-input" id="test"></input>
+              <ul class="dd-menu">
+                <li onClick={() => this.changeObstacles()}>Change Obstacles</li>
+                <li onClick={() => this.changeDensity(0.1)}>Low Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.3)}>Medium Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.45)}>High Density Obstacles</li>
+              </ul>
+            </label>
           </ul>
-      }</ul> <br/>      
+      }</ul> <br/> 
+
       </nav>     
 
-
-       
         {/* Render the 2D grid layout */}
         <div className="grid align-middle">
           {grid.map((row, rowIdx) => {

@@ -1,6 +1,7 @@
 .grid {
   
     height: calc(100vh-60px);
+    min-width: 1200px;
     padding: 35px 20px 20px 0;
     background-color: #fdfdfd;
   }
@@ -19,6 +20,7 @@
 }
 
 .logo{
+  cursor: pointer;
   display: flex;
   width: 100px;
   align-items: center;
@@ -78,7 +80,7 @@
 }
 
 
-/*------------------------*/
+/*----Spinner---------*/
 .wrapper {
   margin:100px
 }
@@ -139,4 +141,89 @@
   0% {opacity:0;-webkit-transform:scale(0);}
   70% {opacity:1;}
   100% {opacity:0;-webkit-transform:scale(1);}
+}
+
+/*---------DropDown ------*/
+
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
+.dd-button {
+  display: inline-block;
+  border-radius: 4px;
+  padding-top: 10px;
+  background-color: transparent;
+  color: #fff;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dd-button:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0; 
+  height: 0; 
+}
+
+.dd-butto li:hover {
+  color: rgb(12, 53, 71);
+  cursor: pointer;
+}
+.dd-butto li {
+  position: relative;
+}
+.dd-butto li::after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 0%;
+  background-color: rgb(12, 53, 71);
+  position: absolute;
+  transition: all ease-in-out 250ms;
+  margin-top: 10px;
+}
+.dd-butto li:hover::after{
+  width: 100%;
+}
+
+.dd-input {
+  display: none;
+}
+
+.dd-menu {
+  position: absolute;
+  z-index: 100;
+  top: 100%;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0;
+  margin: 20px 20px 20px 20px;
+  box-shadow: 0 0 6px 0 rgba(0,0,0,0.1);
+  background-color: #ffffff;
+  list-style-type: none;
+  font-size: 12px;
+}
+
+.dd-input + .dd-menu {
+  display: none;
+} 
+
+.dd-input:checked + .dd-menu {
+  display: block;
+} 
+
+.dd-menu li {
+  padding: 10px 0px;
+  cursor: pointer;
+  white-space: nowrap;
+  color: rgb(12, 53, 71);
+
+}
+
+.dd-menu li:hover {
+  background-color: #f6f6f6;
 }
