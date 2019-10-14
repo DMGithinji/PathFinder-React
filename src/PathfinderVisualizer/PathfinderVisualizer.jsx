@@ -146,11 +146,39 @@ export default class PathfinderVisualizer extends Component {
     this.setState({visualizersBeenReset: true});
   }
 
+  getStartNode(){
+    const {grid} = this.state;
+    let startNode =grid[START_NODE_ROW][START_NODE_COL];
+    grid.forEach(function(row){
+      for (let i = 0; i < row.length; i++){
+        let node = (row[i]);
+        if (node.isStart){
+          startNode = node;;
+        }
+      }
+    });
+    return startNode;
+  }
+
+  getFinishNode(){
+    const {grid} = this.state;
+    let finishNode =grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    grid.forEach(function(row){
+      for (let i = 0; i < row.length; i++){
+        let node = (row[i]);
+        if (node.isFinish){
+          finishNode = node;;
+        }
+      }
+    });
+    return finishNode;
+  }
+
   //Function to be ran on click to initiate visualization of Dijkstra's ALgorithm
   visualizeDijkstra() {
     const {grid} = this.state;
-    const startNode = grid[START_NODE_ROW][START_NODE_COL];
-    const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    const startNode = this.getStartNode();
+    const finishNode = this.getFinishNode();
     this.minorResetGrid(grid)
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedShortestPath(finishNode);
