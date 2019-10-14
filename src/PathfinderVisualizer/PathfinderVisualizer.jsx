@@ -19,6 +19,7 @@ export default class PathfinderVisualizer extends Component {
       grid: [],
       mouseIsPressed: false,
       startNodeIsPressed: false,
+      finishNodeIsPressed: false,
     };
   }
 
@@ -33,6 +34,9 @@ export default class PathfinderVisualizer extends Component {
     if (this.state.grid[row][col].isStart){
       this.handleMousePressforStart(row, col);
       return;
+    } else if(this.state.grid[row][col].isFinish){
+      this.handleMousePressforFinish(row, col);
+      return;
     }
     const newGrid = toggleWallResetGrid(this.state.grid, row, col);
     this.setState({grid: newGrid, mouseIsPressed: true});
@@ -41,11 +45,15 @@ export default class PathfinderVisualizer extends Component {
 
   //When mouse enters node while pressed, make node wall
   handleMouseEnter(row, col){
-    if ((!this.state.mouseIsPressed) && (!this.state.startNodeIsPressed)) return; //if not pressed already, don't do anything
+    if ((!this.state.mouseIsPressed) && (!this.state.startNodeIsPressed) && (!this.state.finishNodeIsPressed)) return; //if not pressed already, don't do anything
     if(this.state.startNodeIsPressed){
       this.handleMouseEnterWithStart(row, col);
       return;
     } 
+    else if(this.state.finishNodeIsPressed){
+      this.handleMouseEnterWithFinish(row, col);
+      return;    
+    }
     else {
       const newGrid = toggleWallResetGrid(this.state.grid, row, col);
       this.setState({grid: newGrid});
@@ -56,23 +64,40 @@ export default class PathfinderVisualizer extends Component {
   handleStop(row, col){
     this.setState({mouseIsPressed: false});
     this.setState({startNodeIsPressed: false});
+    this.setState({finishNodeIsPressed: false});
   }
 
   //When mouse is clicked on start, note that it is start pressed - prep to hold it
   handleMousePressforStart(row, col){
       this.setState({startNodeIsPressed: true});
   }
+  handleMousePressforFinish(row, col){
+    this.setState({finishNodeIsPressed: true});
+}
 
   //When mouse enters node while pressed, make node wall
   handleMouseEnterWithStart(row, col){
     if (!this.state.startNodeIsPressed) return; //if start not pressed already, don't do anything
     const newGrid = toggleStartResetGrid(this.state.grid, row, col);
     this.setState({grid: newGrid});
+  }
+
+  //When mouse enters node while pressed, make node wall
+  handleMouseEnterWithFinish(row, col){
+    if (!this.state.finishNodeIsPressed) return; //if finish not pressed already, don't do anything
+    const newGrid = toggleFinishResetGrid(this.state.grid, row, col);
+    this.setState({grid: newGrid});
   } 
 
   handleMouseLeave(row, col){
-    if (!this.state.startNodeIsPressed) return; //if not pressed already, don't do anything
-    const newGrid = toggleStartResetGrid(this.state.grid, row, col);
+    if ((!this.state.startNodeIsPressed) && (!this.state.finishNodeIsPressed)) return; //if not pressed already, don't do anything
+    let newGrid;
+    if(this.state.startNodeIsPressed){
+      newGrid = toggleStartResetGrid(this.state.grid, row, col);
+    } 
+    else if(this.state.finishNodeIsPressed){
+      newGrid = toggleFinishResetGrid(this.state.grid, row, col);
+    }
     this.setState({grid: newGrid});
 }
 
@@ -97,8 +122,6 @@ export default class PathfinderVisualizer extends Component {
     if(nodesInShortestPathOrder[0] !== this.state.grid[START_NODE_ROW][START_NODE_COL]){
       alert('No path available');
     }
-    console.log(this.state.grid[FINISH_NODE_ROW][FINISH_NODE_COL]);
-    console.log(nodesInShortestPathOrder[0]);
     for (let i = 1; i < nodesInShortestPathOrder.length-1; i++) {
       setTimeout(() => {
         const node = nodesInShortestPathOrder[i];
@@ -110,6 +133,13 @@ export default class PathfinderVisualizer extends Component {
   //Function to be ran on click to initiate visualization of Dijkstra's ALgorithm
   visualizeDijkstra() {
     const {grid} = this.state;
+    //Get where start and finish nodes are
+    // const startNode = grid.filter(row=> 
+    //   row.filter(col => 
+    //     col.filter(node => 
+    //       node.isStart === true)));
+    console.log(grid)
+
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
@@ -119,7 +149,7 @@ export default class PathfinderVisualizer extends Component {
   }
 
   render(){
-    const {grid, mouseIsPressed, startNodeIsPressed} = this.state;
+    const {grid, mouseIsPressed, startNodeIsPressed, finishNodeIsPressed} = this.state;
     
     return (
       <div>
@@ -143,6 +173,7 @@ export default class PathfinderVisualizer extends Component {
                       isWall={isWall}
                       mouseIsPressed={mouseIsPressed}
                       startNodeIsPressed={startNodeIsPressed}
+                      finishNodeIsPressed={finishNodeIsPressed}
                       whileMousePressed={(row, col) => this.handleMousePress(row, col)}
                       onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}   
                       onMouseLeave={(row, col) => this.handleMouseLeave(row, col)}   
@@ -209,6 +240,17 @@ const toggleStartResetGrid = (grid, row, col) => {
   const newNode = {
     ...node,
     isStart: !node.isStart,
+  };
+  newGrid[row][col] = newNode;
+  return newGrid;
+}
+
+const toggleFinishResetGrid = (grid, row, col) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  const newNode = {
+    ...node,
+    isFinish: !node.isFinish,
   };
   newGrid[row][col] = newNode;
   return newGrid;
