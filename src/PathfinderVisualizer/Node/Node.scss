@@ -80,3 +80,13 @@
         background-color: rgb(255, 254, 106);
     }
 }
+
+.node-reset {
+    margin: -1px;
+    padding: 0;
+    width: 24px;
+    height: 24px;
+    outline: 1px solid rgb(197, 197, 197);
+    display: inline-block;
+    background-color: #fff;
+}

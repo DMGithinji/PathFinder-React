@@ -11,6 +11,8 @@ const FINISH_NODE_COL = 50;
 const ROW_NUMBER = 20;
 const COLUMN_NUMBER = 52;
 
+let randomGenerator = true;
+let defaultRandomWallGenerator = 0.3;
 
 export default class PathfinderVisualizer extends Component {
   constructor(){
@@ -20,6 +22,7 @@ export default class PathfinderVisualizer extends Component {
       mouseIsPressed: false,
       startNodeIsPressed: false,
       finishNodeIsPressed: false,
+      blockUpdate: false,
     };
   }
 
@@ -31,6 +34,8 @@ export default class PathfinderVisualizer extends Component {
   
   //When mouse is clicked, make node wall
   handleMousePress(row, col){
+    if (this.state.blockUpdate) return;
+
     if (this.state.grid[row][col].isStart){
       this.handleMousePressforStart(row, col);
       return;
@@ -45,6 +50,8 @@ export default class PathfinderVisualizer extends Component {
 
   //When mouse enters node while pressed, make node wall
   handleMouseEnter(row, col){
+    if (this.state.blockUpdate) return;
+
     if ((!this.state.mouseIsPressed) && (!this.state.startNodeIsPressed) && (!this.state.finishNodeIsPressed)) return; //if not pressed already, don't do anything
     if(this.state.startNodeIsPressed){
       this.handleMouseEnterWithStart(row, col);
@@ -62,6 +69,8 @@ export default class PathfinderVisualizer extends Component {
 
   //When user stops pressing, stop making walls
   handleStop(row, col){
+    if (this.state.blockUpdate) return;
+
     this.setState({mouseIsPressed: false});
     this.setState({startNodeIsPressed: false});
     this.setState({finishNodeIsPressed: false});
@@ -120,7 +129,10 @@ export default class PathfinderVisualizer extends Component {
   //Function to enable visualization of result ie shortest path found
   animateShortestPath(nodesInShortestPathOrder) {
     if(nodesInShortestPathOrder[0] !== this.state.grid[START_NODE_ROW][START_NODE_COL]){
+      console.log('No path available');
       alert('No path available');
+      this.setState({blockUpdate: false});
+      return;
     }
     for (let i = 1; i < nodesInShortestPathOrder.length-1; i++) {
       setTimeout(() => {
@@ -128,24 +140,52 @@ export default class PathfinderVisualizer extends Component {
         document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
       }, 50 * i);
     }
+    this.setState({blockUpdate: false});
   }
 
   //Function to be ran on click to initiate visualization of Dijkstra's ALgorithm
   visualizeDijkstra() {
     const {grid} = this.state;
-    //Get where start and finish nodes are
-    // const startNode = grid.filter(row=> 
-    //   row.filter(col => 
-    //     col.filter(node => 
-    //       node.isStart === true)));
-    console.log(grid)
-
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedShortestPath(finishNode);
-    // console.log(visitedNodesInOrder, nodesInShortestPathOrder);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
+    this.setState({blockUpdate: true});
+  }
+
+  //Generate Random Obstacle SetUp
+  changeObstacles(){
+    if (this.state.blockUpdate) return;
+    randomGenerator = true;
+    const grid = getInitialGrid();
+    this.setState({grid});
+  }
+
+  //Put Obstacles On or Off
+  toggleObstacles(){
+    if (this.state.blockUpdate) return;
+    randomGenerator = !randomGenerator;
+    const grid = getInitialGrid();
+    this.setState({grid});
+  }
+
+  resetGrid(){
+    if (this.state.blockUpdate) return;
+    // this.setState({blockUpdate: false});
+    const grid = getInitialGrid();
+    this.setState({grid});
+    console.log(grid);
+    grid.forEach(function(row){
+      for (let i = 0; i < row.length; i++){
+        let node = (row[i]);
+        if (!node.isStart && !node.isFinish && !node.isWall){
+          document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
+        }
+
+      }
+
+    });
   }
 
   render(){
@@ -154,8 +194,10 @@ export default class PathfinderVisualizer extends Component {
     return (
       <div>
         Pathfinder Visualizer <br/>
-
+        <button onClick={() => this.resetGrid()}>Reset Grid</button>
         <button onClick={() => this.visualizeDijkstra()}>Visualize</button>
+        <button onClick={() => this.changeObstacles()}>Change Obstacles</button>
+        <button onClick={() => this.toggleObstacles()}>Toggle Obstacles</button>
 
         {/* Render the 2D grid layout */}
         <div className="grid">
@@ -212,9 +254,14 @@ const getInitialGrid = () => {
     const currentRow = [];
     for (let col = 0; col < COLUMN_NUMBER; col++) {
       let newNode =createNode(col, row);
-      if (Math.random(1) < 0.3){
-        newNode.isWall = true;
+
+      //Random wall generator
+      if (randomGenerator){
+          if (Math.random(1) < defaultRandomWallGenerator){
+            newNode.isWall = true;
+        }
       }
+
       currentRow.push(newNode);
     }
     grid.push(currentRow);
