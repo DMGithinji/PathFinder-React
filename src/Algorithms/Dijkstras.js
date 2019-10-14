@@ -18,19 +18,17 @@ export function dijkstra(grid, startNode, finishNode) {
         sortNodesByDistance(unvisitedNodes);
         const closestNode = unvisitedNodes.shift(); //get the next closest node 
         if (closestNode.isWall) continue; //if closest node is a wall, skip it
-        closestNode.isVisited = true; //mark closest node if not wall as visited 
         if (closestNode.distance === Infinity) return orderedVisitedNodes; //if closest node is a wall, skip it
+        closestNode.isVisited = true; //mark closest node if not wall as visited 
         orderedVisitedNodes.push(closestNode); //Add it to VisitedArray
 
         //if we get to finish node, return all the visited nodes
         if (closestNode === finishNode){
             return orderedVisitedNodes;
         }
-
         //otherwise, get the next set of nodes and update distances and mark their previous node
         updateUnvisitedNeighbours(closestNode, grid)
     }
-
 }
 
 //gets all the nodes

@@ -12,8 +12,8 @@ const FINISH_NODE_COL = 50;
 const ROW_NUMBER = 20;
 const COLUMN_NUMBER = 52;
 
-let randomGenerator = true;
-let defaultRandomWallGenerator = 0.3;
+let randomGenerator = false;
+let defaultRandomWallGenerator = 0.15;
 
 export default class PathfinderVisualizer extends Component {
   constructor(){
@@ -48,7 +48,6 @@ export default class PathfinderVisualizer extends Component {
     }
     const newGrid = toggleWallResetGrid(this.state.grid, row, col);
     this.setState({grid: newGrid, mouseIsPressed: true});
-    console.log(`mouse is pressed at col - ${col} and row -${row}`);
   }
 
   //When mouse enters node while pressed, make node wall
@@ -132,7 +131,7 @@ export default class PathfinderVisualizer extends Component {
 
   //Function to enable visualization of result ie shortest path found
   animateShortestPath(nodesInShortestPathOrder) {
-    if(nodesInShortestPathOrder[0] !== this.state.grid[START_NODE_ROW][START_NODE_COL]){
+    if(nodesInShortestPathOrder[0] !== this.getStartNode()){
       console.log('No path available');
       alert('No path available');
       this.setState({isVisualizing: false});
@@ -226,7 +225,6 @@ export default class PathfinderVisualizer extends Component {
     // this.setState({isVisualizing: false});
     const grid = getInitialGrid();
     this.setState({grid});
-    console.log(grid);
     grid.forEach(function(row){
       for (let i = 0; i < row.length; i++){
         let node = (row[i]);
@@ -280,8 +278,8 @@ export default class PathfinderVisualizer extends Component {
               <ul class="dd-menu">
                 <li onClick={() => this.changeObstacles()}>Change Obstacles</li>
                 <li onClick={() => this.changeDensity(0.1)}>Low Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.3)}>Medium Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.45)}>High Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.2)}>Medium Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.3)}>High Density Obstacles</li>
               </ul>
             </label>
           </ul>
