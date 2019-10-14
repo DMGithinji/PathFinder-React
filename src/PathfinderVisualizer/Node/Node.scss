@@ -1,6 +1,6 @@
 .node {
-    margin: -1px;
-    padding: 0;
+    margin: -1px !important;
+    padding: 0 !important;
     width: 24px;
     height: 24px;
     outline: 1px solid rgb(197, 197, 197);
@@ -10,14 +10,20 @@
 
 .node-start {
     background-color: rgb(0, 246, 21) !important;
+    outline: 1px solid rgb(0, 246, 21) !important;
+
 }
 
 .node-finish {
     background-color: rgb(197, 48, 48) !important;
+    outline: 1px solid  rgb(197, 48, 48) !important;
+
 }
 
 .node-wall {
     background-color: rgb(12, 53, 71);
+    outline: 1px solid  rgb(12, 53, 71) !important;
+
 }
 
 .node-visited {

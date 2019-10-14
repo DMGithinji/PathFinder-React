@@ -113,8 +113,8 @@ export default class PathfinderVisualizer extends Component {
 
   //Function to enable visualization of Dijkstra's Algorithm in play
   animateDijkstra (visitedNodesInOrder, nodesInShortestPathOrder){
-    for (let i = 0; i <= visitedNodesInOrder.length-1; i++) {
-      if (i === visitedNodesInOrder.length-1) {
+    for (let i = 0; i <= visitedNodesInOrder.length; i++) {
+      if (i === visitedNodesInOrder.length) {
         setTimeout(() => {
           this.animateShortestPath(nodesInShortestPathOrder);
         }, 10 * i);
@@ -210,20 +210,25 @@ export default class PathfinderVisualizer extends Component {
 
     return (
       <div>
-        Pathfinder Visualizer <br/>        
-        <div>{isVisualizing 
-        ? 'Visualizing' 
-        : <div>
-            <button onClick={() => this.visualizeDijkstra()}>Visualize</button> 
-            <button onClick={() => this.resetGrid()}>Reset Grid</button>
-            <button onClick={() => this.changeObstacles()}>Change Obstacles</button>
-            <button onClick={() => this.toggleObstacles()}>Toggle Obstacles</button>
-          </div>
-      }</div> <br/>
+        <nav>
+        <div class="logo">
+        PATH  <br/> FINDER 
+        </div>
+        <ul class="nav-links">{isVisualizing 
+        ? 'Visualizing . . .' 
+        : <ul class="nav-links">
+            <li onClick={() => this.visualizeDijkstra()}>Visualize</li> 
+            <li onClick={() => this.resetGrid()}>Reset Grid</li>
+            <li onClick={() => this.changeObstacles()}>Change Obstacles</li>
+            <li onClick={() => this.toggleObstacles()}>Toggle Obstacles</li>
+          </ul>
+      }</ul> <br/>      
+      </nav>     
+
 
        
         {/* Render the 2D grid layout */}
-        <div className="grid">
+        <div className="grid align-middle">
           {grid.map((row, rowIdx) => {
             return (
               <div key={rowIdx}>
