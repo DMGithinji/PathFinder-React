@@ -5,29 +5,18 @@
 //between start point and end point
 
 export function dijkstra(grid, startNode, finishNode) {
-    //start is changed from a distance of infinity to 0
     startNode.distance = 0;
-    //create an array of all the nodes of which are unvisited
     const unvisitedNodes = getAllNodes(grid)
-    //create an empty array to store a visited nodes in order in which they were visited
     const orderedVisitedNodes = [];
-
-    //while we havent checked all nodes
     while(!!unvisitedNodes.length) {
-        //consistently sort all the nodes based on distance on each loop
         sortNodesByDistance(unvisitedNodes);
-        const closestNode = unvisitedNodes.shift(); //get the next closest node 
-        if (closestNode.isWall) continue; //if closest node is a wall, skip it
-        if (closestNode.distance === Infinity) return orderedVisitedNodes; //if closest node is a wall, skip it
-        closestNode.isVisited = true; //mark closest node if not wall as visited 
-        orderedVisitedNodes.push(closestNode); //Add it to VisitedArray
-
-        //if we get to finish node, return all the visited nodes
-        if (closestNode === finishNode){
-            return orderedVisitedNodes;
-        }
-        //otherwise, get the next set of nodes and update distances and mark their previous node
-        updateUnvisitedNeighbours(closestNode, grid)
+        const closestNode = unvisitedNodes.shift(); 
+        if (closestNode.isWall) continue;
+        if (closestNode.distance === Infinity) return orderedVisitedNodes;
+        closestNode.isVisited = true; 
+        if (closestNode === finishNode) return orderedVisitedNodes;
+        orderedVisitedNodes.push(closestNode); 
+        updateUnvisitedNeighbours(closestNode, grid); 
     }
 }
 
@@ -57,14 +46,15 @@ function updateUnvisitedNeighbours (node, grid){
 function getUnvisitedNeighbours (node, grid) {
     const neighbours = [];
     const {col, row} = node;
-    if (row > 0) neighbours.push(grid[row - 1][col]); //get upper neighbour
-    if (row < grid.length-1) neighbours.push(grid[row+1][col]); //get lower neighbour
-    if (col > 0) neighbours.push(grid[row][col-1]); //get left neighbour
     if (col < grid[0].length-1) neighbours.push(grid[row][col+1]); //get right neighbour
-    //bottom-left
-    //bottom-right
-    //top-left
-    //top-right
+    if (row < grid.length-1) neighbours.push(grid[row+1][col]); //get lower neighbour
+    if (row > 0) neighbours.push(grid[row - 1][col]); //get upper neighbour
+    if (col > 0) neighbours.push(grid[row][col-1]); //get left neighbour
+
+    // if (col < grid[0].length-1 && row < grid.length-1) neighbours.push(grid[row+1][col+1]); //get right neighbour
+    // if (col > 0  &&  row < grid.length-1) neighbours.push(grid[row+1][col-1]); //get lower neighbour
+    // if (col > 0 && row > 0) neighbours.push(grid[row - 1][col-1]); //get upper neighbour
+    // if (col < grid[0].length-1 && row > 0)neighbours.push(grid[row-1][col+1]); //get left neighbour
     return neighbours.filter(neighbour=> !neighbour.isVisited); //return array of neighbour nodes that havent been visited
 }
 

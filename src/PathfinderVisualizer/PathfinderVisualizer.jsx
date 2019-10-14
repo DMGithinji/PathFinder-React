@@ -3,11 +3,10 @@ import React, {Component} from 'react';
 import Node from './Node/Node';
 import './PathfinderVisualizer.scss';
 import {dijkstra, orderedShortestPath} from '../Algorithms/Dijkstras';
-// import Dropdown from 'react-bootstrap/Dropdown';
 
-const START_NODE_ROW = 10;
+const START_NODE_ROW = 8;
 const START_NODE_COL = 10;
-const FINISH_NODE_ROW = 18;
+const FINISH_NODE_ROW = 11;
 const FINISH_NODE_COL = 50;
 const ROW_NUMBER = 20;
 const COLUMN_NUMBER = 52;
@@ -73,7 +72,6 @@ export default class PathfinderVisualizer extends Component {
   handleStop(row, col){
     if (!this.state.visualizationBeenReset) return;
     if (this.state.isVisualizing) return;
-
     this.setState({mouseIsPressed: false});
     this.setState({startNodeIsPressed: false});
     this.setState({finishNodeIsPressed: false});
@@ -113,41 +111,6 @@ export default class PathfinderVisualizer extends Component {
     this.setState({grid: newGrid});
 }
 
-  //Function to enable visualization of Dijkstra's Algorithm in play
-  animateDijkstra (visitedNodesInOrder, nodesInShortestPathOrder){
-    for (let i = 0; i <= visitedNodesInOrder.length-1; i++) {
-      if (i === visitedNodesInOrder.length-1) {
-        setTimeout(() => {
-          this.animateShortestPath(nodesInShortestPathOrder);
-        }, 10 * i);
-        return;
-      }    
-      setTimeout(()=>{
-        const node = visitedNodesInOrder[i];
-        if (!node.isStart) document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
-      }, 10 * i);
-    }    
-  }
-
-  //Function to enable visualization of result ie shortest path found
-  animateShortestPath(nodesInShortestPathOrder) {
-    if(nodesInShortestPathOrder[0] !== this.getStartNode()){
-      console.log('No path available');
-      alert('No path available');
-      this.setState({isVisualizing: false});
-      this.setState({visualizersBeenReset: false});
-      return;
-    }
-    for (let i = 1; i < nodesInShortestPathOrder.length-1; i++) {
-      setTimeout(() => {
-        const node = nodesInShortestPathOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
-      }, 50 * i);
-    }
-    this.setState({isVisualizing: false});
-    this.setState({visualizersBeenReset: true});
-  }
-
   getStartNode(){
     const {grid} = this.state;
     let startNode =grid[START_NODE_ROW][START_NODE_COL];
@@ -175,6 +138,42 @@ export default class PathfinderVisualizer extends Component {
     });
     return finishNode;
   }
+  //Function to enable visualization of Dijkstra's Algorithm in play
+  animateDijkstra (visitedNodesInOrder, nodesInShortestPathOrder){
+    for (let i = 0; i <= visitedNodesInOrder.length-1; i++) {
+      if (i === visitedNodesInOrder.length-1) {
+        setTimeout(() => {
+          this.animateShortestPath(nodesInShortestPathOrder);
+        }, 3 * i);
+        return;
+      }    
+      setTimeout(()=>{
+        const node = visitedNodesInOrder[i];
+        if (!node.isStart) document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+      }, 3 * i);
+    }    
+  }
+
+  //Function to enable visualization of result ie shortest path found
+  animateShortestPath(nodesInShortestPathOrder) {
+    if(nodesInShortestPathOrder[0] !== this.getStartNode()){
+      console.log('No path available');
+      alert('No path available');
+      this.setState({isVisualizing: false});
+      this.setState({visualizersBeenReset: false});
+      return;
+    }
+    for (let i = 1; i < nodesInShortestPathOrder.length-1; i++) {
+      setTimeout(() => {
+        const node = nodesInShortestPathOrder[i];
+        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
+      }, 50 * i);
+    }
+    this.setState({isVisualizing: false});
+    this.setState({visualizationBeenReset: true});
+  }
+
+
 
   //Function to be ran on click to initiate visualization of Dijkstra's ALgorithm
   visualizeDijkstra() {
@@ -192,6 +191,7 @@ export default class PathfinderVisualizer extends Component {
   //Generate Random Obstacle SetUp
   changeObstacles(){
     if (this.state.isVisualizing) return;
+    if (!this.state.visualizationBeenReset) return;
     randomGenerator = true;
     const grid = getInitialGrid();
     this.setState({grid});
@@ -202,6 +202,7 @@ export default class PathfinderVisualizer extends Component {
   //Generate Random Obstacle SetUp
   changeDensity(density){
     if (this.state.isVisualizing) return;
+    if (!this.state.visualizationBeenReset) return;
     randomGenerator = true;
     defaultRandomWallGenerator = density;
     const grid = getInitialGrid();
@@ -213,6 +214,7 @@ export default class PathfinderVisualizer extends Component {
   //Put Obstacles On or Off
   toggleObstacles(){
     if (this.state.isVisualizing) return;
+    if (!this.state.visualizationBeenReset) return;
     randomGenerator = !randomGenerator;
     const grid = getInitialGrid();
     this.setState({grid});
@@ -222,7 +224,8 @@ export default class PathfinderVisualizer extends Component {
 
   resetGrid(){
     if (this.state.isVisualizing) return;
-    // this.setState({isVisualizing: false});
+    if (!this.state.visualizationBeenReset) return;
+    this.setState({isVisualizing: false});
     const grid = getInitialGrid();
     this.setState({grid});
     grid.forEach(function(row){
@@ -260,26 +263,26 @@ export default class PathfinderVisualizer extends Component {
         </div>
         <ul className="nav-links">{isVisualizing 
         ? <div>
-          <div class="spinner"> 
+          <div className="spinner"> 
           <span></span><span></span><span></span>
           </div>
-          <div class="label">Visualizing</div>
+          <div className="label">Visualizing</div>
       </div>
       
-        : <ul class="nav-links">
+        : <ul className="nav-links">
             <li onClick={() => this.visualizeDijkstra()}>Visualize</li> 
             <li onClick={() => this.resetGrid()}>Reset Grid</li>
             <li onClick={() => this.toggleObstacles()}>Toggle Obstacles</li>  
-            <label class="dropdown">
-              <div class="dd-button">
+            <label className="dropdown">
+              <div className="dd-button">
                 Obstacle Options
               </div>
-              <input type="checkbox" class="dd-input" id="test"></input>
-              <ul class="dd-menu">
+              <input type="checkbox" className="dd-input" id="test"></input>
+              <ul className="dd-menu">
                 <li onClick={() => this.changeObstacles()}>Change Obstacles</li>
-                <li onClick={() => this.changeDensity(0.1)}>Low Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.2)}>Medium Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.3)}>High Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.095)}>Low Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.16)}>Medium Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.26)}>High Density Obstacles</li>
               </ul>
             </label>
           </ul>
@@ -326,10 +329,10 @@ const createNode = (col, row) => {
   return {
     col,
     row,
+    distance: Infinity,
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
     isWall: false,
-    distance: Infinity,
     isVisited: false,
     previousNode: null,
   };
@@ -342,14 +345,12 @@ const getInitialGrid = () => {
     const currentRow = [];
     for (let col = 0; col < COLUMN_NUMBER; col++) {
       let newNode =createNode(col, row);
-
       //Random wall generator
       if (randomGenerator){
           if (Math.random(1) < defaultRandomWallGenerator){
             newNode.isWall = true;
         }
       }
-
       currentRow.push(newNode);
     }
     grid.push(currentRow);
@@ -368,9 +369,6 @@ const toggleWallResetGrid = (grid, row, col) => {
   newGrid[row][col] = newNode;
   return newGrid;
 }
-
-
-
 
 //function to make a node a startPoint or remove it as a startPoint
 const toggleStartResetGrid = (grid, row, col) => {
