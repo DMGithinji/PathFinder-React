@@ -18,7 +18,7 @@ export default class PathfinderVisualizer extends Component {
     this.state = {
       grid: [],
       mouseIsPressed: false,
-      isMovingNode: false,
+      startNodeIsPressed: false,
     };
   }
 
@@ -30,6 +30,10 @@ export default class PathfinderVisualizer extends Component {
   
   //When mouse is clicked, make node wall
   handleMousePress(row, col){
+    if (this.state.grid[row][col].isStart){
+      this.handleMousePressforStart(row, col);
+      return;
+    }
     const newGrid = toggleWallResetGrid(this.state.grid, row, col);
     this.setState({grid: newGrid, mouseIsPressed: true});
     console.log(`mouse is pressed at col - ${col} and row -${row}`);
@@ -37,16 +41,40 @@ export default class PathfinderVisualizer extends Component {
 
   //When mouse enters node while pressed, make node wall
   handleMouseEnter(row, col){
-    if (!this.state.mouseIsPressed && !this.state.isMovingNode ) return; //if not pressed already, don't do anything
-    const newGrid = toggleWallResetGrid(this.state.grid, row, col);
-    this.setState({grid: newGrid});
-    console.log(`mouse is still pressed at col - ${col} and row -${row}`);
-}
+    if ((!this.state.mouseIsPressed) && (!this.state.startNodeIsPressed)) return; //if not pressed already, don't do anything
+    if(this.state.startNodeIsPressed){
+      this.handleMouseEnterWithStart(row, col);
+      return;
+    } 
+    else {
+      const newGrid = toggleWallResetGrid(this.state.grid, row, col);
+      this.setState({grid: newGrid});
+    }
+  }
 
   //When user stops pressing, stop making walls
   handleStop(row, col){
     this.setState({mouseIsPressed: false});
+    this.setState({startNodeIsPressed: false});
   }
+
+  //When mouse is clicked on start, note that it is start pressed - prep to hold it
+  handleMousePressforStart(row, col){
+      this.setState({startNodeIsPressed: true});
+  }
+
+  //When mouse enters node while pressed, make node wall
+  handleMouseEnterWithStart(row, col){
+    if (!this.state.startNodeIsPressed) return; //if start not pressed already, don't do anything
+    const newGrid = toggleStartResetGrid(this.state.grid, row, col);
+    this.setState({grid: newGrid});
+  } 
+
+  handleMouseLeave(row, col){
+    if (!this.state.startNodeIsPressed) return; //if not pressed already, don't do anything
+    const newGrid = toggleStartResetGrid(this.state.grid, row, col);
+    this.setState({grid: newGrid});
+}
 
   //Function to enable visualization of Dijkstra's Algorithm in play
   animateDijkstra (visitedNodesInOrder, nodesInShortestPathOrder){
@@ -91,7 +119,7 @@ export default class PathfinderVisualizer extends Component {
   }
 
   render(){
-    const {grid, mouseIsPressed} = this.state;
+    const {grid, mouseIsPressed, startNodeIsPressed} = this.state;
     
     return (
       <div>
@@ -114,8 +142,10 @@ export default class PathfinderVisualizer extends Component {
                       isStart={isStart}
                       isWall={isWall}
                       mouseIsPressed={mouseIsPressed}
+                      startNodeIsPressed={startNodeIsPressed}
                       whileMousePressed={(row, col) => this.handleMousePress(row, col)}
                       onMouseEnter={(row, col) => this.handleMouseEnter(row, col)}   
+                      onMouseLeave={(row, col) => this.handleMouseLeave(row, col)}   
                       onMouseUp={()=> this.handleStop(row, col)}                
                       row={row}>
                     </Node>
@@ -138,7 +168,6 @@ const createNode = (col, row) => {
     isStart: row === START_NODE_ROW && col === START_NODE_COL,
     isFinish: row === FINISH_NODE_ROW && col === FINISH_NODE_COL,
     isWall: false,
-    isMovingNode: false,
     distance: Infinity,
     isVisited: false,
     previousNode: null,
@@ -172,3 +201,15 @@ const toggleWallResetGrid = (grid, row, col) => {
 
 
 
+
+//function to make a node a startPoint or remove it as a startPoint
+const toggleStartResetGrid = (grid, row, col) => {
+  const newGrid = grid.slice();
+  const node = newGrid[row][col];
+  const newNode = {
+    ...node,
+    isStart: !node.isStart,
+  };
+  newGrid[row][col] = newNode;
+  return newGrid;
+}
