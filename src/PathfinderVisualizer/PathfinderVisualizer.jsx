@@ -211,7 +211,11 @@ const getInitialGrid = () => {
   for (let row = 0; row <ROW_NUMBER; row++) {
     const currentRow = [];
     for (let col = 0; col < COLUMN_NUMBER; col++) {
-      currentRow.push(createNode(col, row));
+      let newNode =createNode(col, row);
+      if (Math.random(1) < 0.3){
+        newNode.isWall = true;
+      }
+      currentRow.push(newNode);
     }
     grid.push(currentRow);
   }
