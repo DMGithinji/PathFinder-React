@@ -29,7 +29,6 @@ export function dijkstra(grid, startNode, finishNode) {
 
         //otherwise, get the next set of nodes and update distances and mark their previous node
         updateUnvisitedNeighbours(closestNode, grid)
-
     }
 
 }
@@ -64,10 +63,10 @@ function getUnvisitedNeighbours (node, grid) {
     if (row < grid.length-1) neighbours.push(grid[row+1][col]); //get lower neighbour
     if (col > 0) neighbours.push(grid[row][col-1]); //get left neighbour
     if (col < grid[0].length-1) neighbours.push(grid[row][col+1]); //get right neighbour
-    // if (col > 0 && row > 0) neighbours.push(grid[col-1][row-1]); //bottom-left
-    // if (col < grid[0].length-1 && row > 0) neighbours.push(grid[col-1][row-1]); //bottom-right
-    // if (col > 0 && row < grid.length-1) neighbours.push(grid[col-1][row-1]); //top-left
-    // if (col < grid[0].length-1 && row < grid.length-1) neighbours.push(grid[col-1][row-1]); //top-right
+    //bottom-left
+    //bottom-right
+    //top-left
+    //top-right
     return neighbours.filter(neighbour=> !neighbour.isVisited); //return array of neighbour nodes that havent been visited
 }
 
