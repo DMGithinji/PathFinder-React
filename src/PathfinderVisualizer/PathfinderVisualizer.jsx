@@ -22,7 +22,8 @@ export default class PathfinderVisualizer extends Component {
       mouseIsPressed: false,
       startNodeIsPressed: false,
       finishNodeIsPressed: false,
-      blockUpdate: false,
+      isVisualizing: false,
+      visualizersBeenReset: false,
     };
   }
 
@@ -34,7 +35,7 @@ export default class PathfinderVisualizer extends Component {
   
   //When mouse is clicked, make node wall
   handleMousePress(row, col){
-    if (this.state.blockUpdate) return;
+    if (this.state.isVisualizing) return;
 
     if (this.state.grid[row][col].isStart){
       this.handleMousePressforStart(row, col);
@@ -50,7 +51,7 @@ export default class PathfinderVisualizer extends Component {
 
   //When mouse enters node while pressed, make node wall
   handleMouseEnter(row, col){
-    if (this.state.blockUpdate) return;
+    if (this.state.isVisualizing) return;
 
     if ((!this.state.mouseIsPressed) && (!this.state.startNodeIsPressed) && (!this.state.finishNodeIsPressed)) return; //if not pressed already, don't do anything
     if(this.state.startNodeIsPressed){
@@ -69,7 +70,7 @@ export default class PathfinderVisualizer extends Component {
 
   //When user stops pressing, stop making walls
   handleStop(row, col){
-    if (this.state.blockUpdate) return;
+    if (this.state.isVisualizing) return;
 
     this.setState({mouseIsPressed: false});
     this.setState({startNodeIsPressed: false});
@@ -112,7 +113,7 @@ export default class PathfinderVisualizer extends Component {
 
   //Function to enable visualization of Dijkstra's Algorithm in play
   animateDijkstra (visitedNodesInOrder, nodesInShortestPathOrder){
-    for (let i = 1; i <= visitedNodesInOrder.length-1; i++) {
+    for (let i = 0; i <= visitedNodesInOrder.length-1; i++) {
       if (i === visitedNodesInOrder.length-1) {
         setTimeout(() => {
           this.animateShortestPath(nodesInShortestPathOrder);
@@ -121,7 +122,7 @@ export default class PathfinderVisualizer extends Component {
       }    
       setTimeout(()=>{
         const node = visitedNodesInOrder[i];
-        document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+        if (!node.isStart) document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
       }, 10 * i);
     }    
   }
@@ -131,7 +132,8 @@ export default class PathfinderVisualizer extends Component {
     if(nodesInShortestPathOrder[0] !== this.state.grid[START_NODE_ROW][START_NODE_COL]){
       console.log('No path available');
       alert('No path available');
-      this.setState({blockUpdate: false});
+      this.setState({isVisualizing: false});
+      this.setState({visualizersBeenReset: false});
       return;
     }
     for (let i = 1; i < nodesInShortestPathOrder.length-1; i++) {
@@ -140,7 +142,8 @@ export default class PathfinderVisualizer extends Component {
         document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-shortest-path';
       }, 50 * i);
     }
-    this.setState({blockUpdate: false});
+    this.setState({isVisualizing: false});
+    this.setState({visualizersBeenReset: true});
   }
 
   //Function to be ran on click to initiate visualization of Dijkstra's ALgorithm
@@ -148,31 +151,34 @@ export default class PathfinderVisualizer extends Component {
     const {grid} = this.state;
     const startNode = grid[START_NODE_ROW][START_NODE_COL];
     const finishNode = grid[FINISH_NODE_ROW][FINISH_NODE_COL];
+    this.minorResetGrid(grid)
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedShortestPath(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
-    this.setState({blockUpdate: true});
+    this.setState({isVisualizing: true});
   }
 
   //Generate Random Obstacle SetUp
   changeObstacles(){
-    if (this.state.blockUpdate) return;
+    if (this.state.isVisualizing) return;
     randomGenerator = true;
     const grid = getInitialGrid();
     this.setState({grid});
+    this.minorResetGrid(grid)
   }
 
   //Put Obstacles On or Off
   toggleObstacles(){
-    if (this.state.blockUpdate) return;
+    if (this.state.isVisualizing) return;
     randomGenerator = !randomGenerator;
     const grid = getInitialGrid();
     this.setState({grid});
+    this.minorResetGrid(grid)
   }
 
   resetGrid(){
-    if (this.state.blockUpdate) return;
-    // this.setState({blockUpdate: false});
+    if (this.state.isVisualizing) return;
+    // this.setState({isVisualizing: false});
     const grid = getInitialGrid();
     this.setState({grid});
     console.log(grid);
@@ -182,23 +188,40 @@ export default class PathfinderVisualizer extends Component {
         if (!node.isStart && !node.isFinish && !node.isWall){
           document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
         }
-
       }
+    });
+  }
 
+  minorResetGrid(grid){
+    if (this.state.isVisualizing) return;
+    grid.forEach(function(row){
+      for (let i = 0; i < row.length; i++){
+        let node = (row[i]);
+        if (!node.isStart && !node.isFinish && !node.isWall){
+          document.getElementById(`node-${node.row}-${node.col}`).className = 'node';
+        }
+      }
     });
   }
 
   render(){
     const {grid, mouseIsPressed, startNodeIsPressed, finishNodeIsPressed} = this.state;
-    
+    const isVisualizing = this.state.isVisualizing;
+
     return (
       <div>
-        Pathfinder Visualizer <br/>
-        <button onClick={() => this.resetGrid()}>Reset Grid</button>
-        <button onClick={() => this.visualizeDijkstra()}>Visualize</button>
-        <button onClick={() => this.changeObstacles()}>Change Obstacles</button>
-        <button onClick={() => this.toggleObstacles()}>Toggle Obstacles</button>
+        Pathfinder Visualizer <br/>        
+        <div>{isVisualizing 
+        ? 'Visualizing' 
+        : <div>
+            <button onClick={() => this.visualizeDijkstra()}>Visualize</button> 
+            <button onClick={() => this.resetGrid()}>Reset Grid</button>
+            <button onClick={() => this.changeObstacles()}>Change Obstacles</button>
+            <button onClick={() => this.toggleObstacles()}>Toggle Obstacles</button>
+          </div>
+      }</div> <br/>
 
+       
         {/* Render the 2D grid layout */}
         <div className="grid">
           {grid.map((row, rowIdx) => {
