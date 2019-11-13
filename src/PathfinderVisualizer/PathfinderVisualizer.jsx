@@ -27,13 +27,17 @@ export default class PathfinderVisualizer extends Component {
     };
   }
 
-  //Creating 2D grid layout
+  /**
+   * Function called on init, so as to create 2D grid layout with start and finish node set
+   */
   componentDidMount() {
     const grid = getInitialGrid();
     this.setState({grid});
   }
   
-  //When mouse is clicked, make node wall
+  /**
+   * Function to handle when mouse is clicked at node, so as to start making or make particular node an obstacle
+   */
   handleMousePress(row, col){
     if (!this.state.visualizationBeenReset) return;
     if (this.state.isVisualizing) return;
@@ -49,7 +53,9 @@ export default class PathfinderVisualizer extends Component {
     this.setState({grid: newGrid, mouseIsPressed: true});
   }
 
-  //When mouse enters node while pressed, make node wall
+  /**
+   * Function to handle when mouse enters node while pressed, so as to make node an obstacle
+   */
   handleMouseEnter(row, col){
     if (!this.state.visualizationBeenReset) return;
     if (this.state.isVisualizing) return;
@@ -68,7 +74,9 @@ export default class PathfinderVisualizer extends Component {
     }
   }
 
-  //When user stops pressing, stop making walls
+  /**
+   * Function to handle when user stops holding down mouse for obstacle creation, so s to stop making walls
+   */
   handleStop(row, col){
     if (!this.state.visualizationBeenReset) return;
     if (this.state.isVisualizing) return;
@@ -77,28 +85,40 @@ export default class PathfinderVisualizer extends Component {
     this.setState({finishNodeIsPressed: false});
   }
 
-  //When mouse is clicked on start, note that it is start pressed - prep to hold it
+  /**
+   * Function to handle when mouse is clicked on start, note that it is start pressed - prep to hold it
+   */
   handleMousePressforStart(row, col){
       this.setState({startNodeIsPressed: true});
   }
+  /**
+   * Function to handle when mouse is clicked on finish, note that it is start pressed - prep to hold it
+   */
   handleMousePressforFinish(row, col){
     this.setState({finishNodeIsPressed: true});
 }
 
-  //When mouse enters node while pressed, make node wall
+  /**
+   * When mouse enters node while pressed  (holding the start node), make node wall
+   */
   handleMouseEnterWithStart(row, col){
     if (!this.state.startNodeIsPressed) return; //if start not pressed already, don't do anything
     const newGrid = toggleStartResetGrid(this.state.grid, row, col);
     this.setState({grid: newGrid});
   }
 
-  //When mouse enters node while pressed, make node wall
+  /**
+   * Function to handle when mouse enters node while pressed (holding the finish node), make node wall
+   */
   handleMouseEnterWithFinish(row, col){
     if (!this.state.finishNodeIsPressed) return; //if finish not pressed already, don't do anything
     const newGrid = toggleFinishResetGrid(this.state.grid, row, col);
     this.setState({grid: newGrid});
   } 
 
+  /**
+   * Function to handle when mouse leaves node while pressed, make node wall
+   */
   handleMouseLeave(row, col){
     if ((!this.state.startNodeIsPressed) && (!this.state.finishNodeIsPressed)) return; //if not pressed already, don't do anything
     let newGrid;
@@ -111,6 +131,9 @@ export default class PathfinderVisualizer extends Component {
     this.setState({grid: newGrid});
 }
 
+  /**
+   * Function to get current startNode coordinates for visualization
+   */
   getStartNode(){
     const {grid} = this.state;
     let startNode =grid[START_NODE_ROW][START_NODE_COL];
@@ -125,6 +148,9 @@ export default class PathfinderVisualizer extends Component {
     return startNode;
   }
 
+    /**
+   * Function to get current finishNode coordinates for visualization
+   */
   getFinishNode(){
     const {grid} = this.state;
     let finishNode =grid[FINISH_NODE_ROW][FINISH_NODE_COL];
@@ -138,7 +164,10 @@ export default class PathfinderVisualizer extends Component {
     });
     return finishNode;
   }
-  //Function to enable visualization of Dijkstra's Algorithm in play
+
+  /**
+   * Function to enable visualization of Dijkstra's Algorithm in play
+   */
   animateDijkstra (visitedNodesInOrder, nodesInShortestPathOrder){
     for (let i = 0; i <= visitedNodesInOrder.length-1; i++) {
       if (i === visitedNodesInOrder.length-1) {
@@ -154,7 +183,9 @@ export default class PathfinderVisualizer extends Component {
     }    
   }
 
-  //Function to enable visualization of result ie shortest path found
+  /**
+   * Function to enable visualization of result ie shortest path found
+   */
   animateShortestPath(nodesInShortestPathOrder) {
     if(nodesInShortestPathOrder[0] !== this.getStartNode()){
       console.log('No path available');
@@ -175,12 +206,14 @@ export default class PathfinderVisualizer extends Component {
 
 
 
-  //Function to be ran on click to initiate visualization of Dijkstra's ALgorithm
+  /**
+   * Function to initiate visualization of Dijkstra's Algorithm
+   */
   visualizeDijkstra() {
     const {grid} = this.state;
     const startNode = this.getStartNode();
     const finishNode = this.getFinishNode();
-    this.minorResetGrid(grid)
+    this.minorResetGrid(grid);
     const visitedNodesInOrder = dijkstra(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedShortestPath(finishNode);
     this.animateDijkstra(visitedNodesInOrder, nodesInShortestPathOrder);
@@ -188,7 +221,9 @@ export default class PathfinderVisualizer extends Component {
     this.setState({visualizationBeenReset: false});
   }
 
-  //Generate Random Obstacle SetUp
+  /**
+   * Function that changes the obstacke setup
+   */
   changeObstacles(){
     if (this.state.isVisualizing) return;
     if (!this.state.visualizationBeenReset) return;
@@ -199,7 +234,9 @@ export default class PathfinderVisualizer extends Component {
     this.setState({visualizationBeenReset: true});
   }
 
-  //Generate Random Obstacle SetUp
+  /**
+   * Function that generates Random Obstacle SetUp given a particular obstacle density
+   */
   changeDensity(density){
     if (this.state.isVisualizing) return;
     if (!this.state.visualizationBeenReset) return;
@@ -211,7 +248,9 @@ export default class PathfinderVisualizer extends Component {
     this.setState({visualizationBeenReset: true});
 
   }
-  //Put Obstacles On or Off
+  /**
+   * Function to show or hide obstacles On or Off
+   */
   toggleObstacles(){
     if (this.state.isVisualizing) return;
     if (!this.state.visualizationBeenReset) return;
@@ -324,7 +363,9 @@ export default class PathfinderVisualizer extends Component {
   }
 }
 
-// function to setup nodes and position of startpoint and endpoint
+/**
+ * function to setup nodes and default position of startpoint and endpoint
+ */
 const createNode = (col, row) => {
   return {
     col,
@@ -338,7 +379,9 @@ const createNode = (col, row) => {
   };
 };
 
-//function to setup 2D grid layout
+/**
+ * function to setup 2D grid layout
+ */
 const getInitialGrid = () => {
   const grid = [];
   for (let row = 0; row <ROW_NUMBER; row++) {
@@ -358,7 +401,9 @@ const getInitialGrid = () => {
   return grid;
 };
 
-//function to make a node a wall
+/**
+ * function to make a node a wall
+ */
 const toggleWallResetGrid = (grid, row, col) => {
   const newGrid = grid.slice();
   const node = newGrid[row][col];
@@ -370,7 +415,9 @@ const toggleWallResetGrid = (grid, row, col) => {
   return newGrid;
 }
 
-//function to make a node a startPoint or remove it as a startPoint
+/**
+ * function to make a node a startPoint or remove it as a startPoint
+ */
 const toggleStartResetGrid = (grid, row, col) => {
   const newGrid = grid.slice();
   const node = newGrid[row][col];
@@ -382,6 +429,9 @@ const toggleStartResetGrid = (grid, row, col) => {
   return newGrid;
 }
 
+/**
+ * function to make a node a endPoint or remove it as a startPoint
+ */
 const toggleFinishResetGrid = (grid, row, col) => {
   const newGrid = grid.slice();
   const node = newGrid[row][col];

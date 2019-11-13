@@ -6,21 +6,23 @@
 
 export function dijkstra(grid, startNode, finishNode) {
     startNode.distance = 0;
-    const unvisitedNodes = getAllNodes(grid)
+    const unvisitedNodes = getAllNodes(grid);
     const orderedVisitedNodes = [];
     while(!!unvisitedNodes.length) {
         sortNodesByDistance(unvisitedNodes);
-        const closestNode = unvisitedNodes.shift(); 
-        if (closestNode.isWall) continue;
-        if (closestNode.distance === Infinity) return orderedVisitedNodes;
-        closestNode.isVisited = true; 
-        if (closestNode === finishNode) return orderedVisitedNodes;
-        orderedVisitedNodes.push(closestNode); 
+        const closestNode = unvisitedNodes.shift(); //update closest node
+        if (closestNode.isWall) continue; //skip obstacle nodes
+        if (closestNode.distance === Infinity) return orderedVisitedNodes; //When there is no solution
+        closestNode.isVisited = true; //Mark node as visited
+        if (closestNode === finishNode) return orderedVisitedNodes; //On completion of path determination
+        orderedVisitedNodes.push(closestNode); //Add the latest visited node to the visited list
         updateUnvisitedNeighbours(closestNode, grid); 
     }
 }
 
-//gets all the nodes
+/**
+ * Function to get all the nodes in grid and their coordinates
+ */
 function getAllNodes(grid) {
     const nodes = [];
     for (const row of grid) {
@@ -31,10 +33,17 @@ function getAllNodes(grid) {
     return nodes;
 }
 
+/**
+ * Function to sort nodes based on their coordinates
+ */
 function sortNodesByDistance(unvisitedNodes) {
     unvisitedNodes.sort((nodeA, nodeB) => nodeA.distance - nodeB.distance);
 }
 
+/**
+ * Function to update the distance of the neighbours to the current node
+ * and mark the node it originated from for each
+ */
 function updateUnvisitedNeighbours (node, grid){
     const unvisitedNeighbours = getUnvisitedNeighbours(node, grid);
     for (const unvisited of unvisitedNeighbours){
@@ -43,6 +52,9 @@ function updateUnvisitedNeighbours (node, grid){
     }
 }
 
+/**
+ * Function to get the surrounding neighbours of the current node that haven't been visited
+ */
 function getUnvisitedNeighbours (node, grid) {
     const neighbours = [];
     const {col, row} = node;
@@ -58,6 +70,9 @@ function getUnvisitedNeighbours (node, grid) {
     return neighbours.filter(neighbour=> !neighbour.isVisited); //return array of neighbour nodes that havent been visited
 }
 
+/**
+ * Function to organize the nodes that draw out the shortest path
+ */
 export function orderedShortestPath (finishNode){
     const nodesInShortestPath = [];
     let currentNode = finishNode; //setup initial node as the final node
