@@ -180,7 +180,7 @@ export default class PathfinderVisualizer extends Component {
       setTimeout(()=>{
         const node = visitedNodesInOrder[i];
         if (!node.isStart) document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
-      }, 3 * i);
+      }, 2 * i);
     }    
   }
 
@@ -328,12 +328,7 @@ export default class PathfinderVisualizer extends Component {
       <div>
         <div id="openModal-about" class="modalDialog">
             <div>
-              <a href="#close" title="Close" className="close">X</a>
-              {/* <h2> Welcome to PathFinder</h2>
-              <p>A pathfinding algorithm seeks to find the shortest path between two points. </p>
-              <p>This application visualizes various pathfinding algorithms in action. <br/> On this application, the algorithms are adapted for a 2D grid.</p>
-              <hr/>
-              <h4>Here are some instructions on how you could simulate the algorithms in action</h4> */}
+              <a href="#saka" title="Close" className="close">X</a>
               <div class="cPanelContainer">
 
 <div className="cPanelHeader">
@@ -421,7 +416,7 @@ export default class PathfinderVisualizer extends Component {
               </ul>
             </label>
 
-            <li> <a href="#openModal-about">Info</a> </li>  
+            <li> <a href="#openModal-about">App Info</a> </li>  
 
           </ul>
       }</ul> <br/> 
