@@ -3,8 +3,9 @@ import React, {Component} from 'react';
 import Node from './Node/Node';
 import './PathfinderVisualizer.scss';
 import {dijkstra, orderedShortestPath} from '../Algorithms/Dijkstras';
+import { aStar } from '../Algorithms/A_star';
 
-const START_NODE_ROW = 8;
+const START_NODE_ROW = 11;
 const START_NODE_COL = 10;
 const FINISH_NODE_ROW = 11;
 const FINISH_NODE_COL = 50;
@@ -221,12 +222,32 @@ export default class PathfinderVisualizer extends Component {
     this.setState({visualizationBeenReset: false});
   }
 
+    /**
+   * Function to initiate visualization of Dijkstra's Algorithm
+   */
+  visualizeAStar() {
+    const {grid} = this.state;
+    const startNode = this.getStartNode();
+    const finishNode = this.getFinishNode();
+    const visitedNodesInOrder = aStar(grid, startNode, finishNode);
+    this.animateAStar(visitedNodesInOrder);
+
+  }
+  animateAStar (visitedNodesInOrder){
+    for (let i = 0; i <= visitedNodesInOrder.length-1; i++) {  
+      setTimeout(()=>{
+        const node = visitedNodesInOrder[i];
+        if (!node.isStart) document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
+      }, 3 * i);
+    }    
+  }
+
   /**
    * Function that changes the obstacke setup
    */
   changeObstacles(){
     if (this.state.isVisualizing) return;
-    if (!this.state.visualizationBeenReset) return;
+    // if (!this.state.visualizationBeenReset) return;
     randomGenerator = true;
     const grid = getInitialGrid();
     this.setState({grid});
@@ -239,7 +260,7 @@ export default class PathfinderVisualizer extends Component {
    */
   changeDensity(density){
     if (this.state.isVisualizing) return;
-    if (!this.state.visualizationBeenReset) return;
+    // if (!this.state.visualizationBeenReset) return;
     randomGenerator = true;
     defaultRandomWallGenerator = density;
     const grid = getInitialGrid();
@@ -253,7 +274,7 @@ export default class PathfinderVisualizer extends Component {
    */
   toggleObstacles(){
     if (this.state.isVisualizing) return;
-    if (!this.state.visualizationBeenReset) return;
+    // if (!this.state.visualizationBeenReset) return;
     randomGenerator = !randomGenerator;
     const grid = getInitialGrid();
     this.setState({grid});
@@ -263,7 +284,7 @@ export default class PathfinderVisualizer extends Component {
 
   resetGrid(){
     if (this.state.isVisualizing) return;
-    if (!this.state.visualizationBeenReset) return;
+    // if (!this.state.visualizationBeenReset) return;
     this.setState({isVisualizing: false});
     const grid = getInitialGrid();
     this.setState({grid});
@@ -309,7 +330,16 @@ export default class PathfinderVisualizer extends Component {
       </div>
       
         : <ul className="nav-links">
-            <li onClick={() => this.visualizeDijkstra()}>Visualize</li> 
+          <label className="dropdown">
+              <div className="dd-button">
+              Visualize
+              </div>
+              <input type="checkbox" className="dd-input" id="test"></input>
+              <ul className="dd-menu">
+                <li onClick={() => this.visualizeDijkstra()}>Dijkstra's Algorithm</li>
+                <li onClick={() => this.visualizeAStar()}>A* Algorithm</li>
+              </ul>
+            </label>
             <li onClick={() => this.resetGrid()}>Reset Grid</li>
             <li onClick={() => this.toggleObstacles()}>Toggle Obstacles</li>  
             <label className="dropdown">
@@ -320,8 +350,8 @@ export default class PathfinderVisualizer extends Component {
               <ul className="dd-menu">
                 <li onClick={() => this.changeObstacles()}>Change Obstacles</li>
                 <li onClick={() => this.changeDensity(0.095)}>Low Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.16)}>Medium Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.26)}>High Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.2)}>Medium Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.3)}>High Density Obstacles</li>
               </ul>
             </label>
           </ul>
@@ -376,6 +406,9 @@ const createNode = (col, row) => {
     isWall: false,
     isVisited: false,
     previousNode: null,
+    f_score: Infinity,
+    g_score: Infinity,
+    h_score: Infinity,
   };
 };
 
