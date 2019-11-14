@@ -62,17 +62,8 @@ export function aStar( grid, startNode, finishNode) {
                 neigh.previousNode = currentNode;
             }
         });
-        // console.log(currentNode);
-        // console.log(neighbours);
-        //foreach neighbour of currentNode
-            //if neighbour is obstacle or is in CLOSED skip to the next neighbour
-
-            //if new_path to neighbout is shorter OR neighbour is not in OPEN
-            //set f_cost of neighbour
-            //set parent of neighbour
-            //if neighbour is not in OPEN
-                //add neighbour to open
     }
+    return closedSet;
 }
 
 function removeFromArray(arr, node){
