@@ -47,7 +47,7 @@ export function aStar( grid, startNode, finishNode) {
         let neighbours = getNeighbours(currentNode, grid);
 
         neighbours.forEach(neigh => {
-            if(!closedSet.includes(neigh)){
+            if(!closedSet.includes(neigh) && !neigh.isWall){
                 let tentative_g_score = currentNode.g_cost + heuristic(neigh, currentNode);
                 if(!openSet.includes(neigh)){
                     openSet.push(neigh);

@@ -232,7 +232,8 @@ export default class PathfinderVisualizer extends Component {
     const visitedNodesInOrder = aStar(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedAStarPath(finishNode);
     this.animateAStar(visitedNodesInOrder, nodesInShortestPathOrder);
-
+    this.setState({isVisualizing: true});
+    this.setState({visualizationBeenReset: false});
   }
   animateAStar (visitedNodesInOrder, nodesInShortestPathOrder){
     for (let i = 0; i <= visitedNodesInOrder.length-1; i++) { 
