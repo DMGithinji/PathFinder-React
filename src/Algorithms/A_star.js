@@ -33,11 +33,11 @@ export function aStar( grid, startNode, finishNode) {
             }
         });
         let currentNode = openSet[winner];
-        
+
         //if currentNode is finishNode, solution found, reconstruct path
         if (currentNode === finishNode) {
             console.log("Done");
-            return openSet;
+            return closedSet;
         }
 
         //remove currentNode from openSet and add it to closedSet
@@ -48,19 +48,18 @@ export function aStar( grid, startNode, finishNode) {
 
         neighbours.forEach(neigh => {
             if(!closedSet.includes(neigh)){
-                let tentative_g_score = currentNode.g_cost + 1;
+                let tentative_g_score = currentNode.g_cost + heuristic(neigh, currentNode);
                 if(!openSet.includes(neigh)){
                     openSet.push(neigh);
-                    neigh.isVisited = true;
                 } 
                 // else if (tentative_g_score >= neigh.g_cost){
                 //         console.log(neigh.g_cost); //continue
                 // }
 
                 neigh.g_cost = tentative_g_score;
-                // neigh.h_cost = heuristic(neigh, finishNode);
-                // neigh.f_cost = neigh.g_cost + h_cost;
-                //neigh.previousNode = currentNode;
+                neigh.h_cost = heuristic(neigh, finishNode);
+                neigh.f_cost = neigh.g_cost +  neigh.h_cost;
+                neigh.previousNode = currentNode;
             }
         });
         // console.log(currentNode);
@@ -82,6 +81,14 @@ function removeFromArray(arr, node){
             arr.splice(i, 1);
         }
     }
+}
+
+/**
+ * Get the heiristic between point a and d
+ */
+function heuristic(current, target) {
+    // return Math.sqrt( (current.col-target.col)**2 + (current.row-target.row)**2);
+    return (Math.abs(current.col-target.col) + (Math.abs(current.row - target.row)));
 }
 /**
  * Function to assign nodes with their costs
@@ -118,4 +125,17 @@ function getNeighbours (node, grid) {
     // if (col < grid[0].length-1 && row > 0)neighbours.push(grid[row-1][col+1]); //get left neighbour
     // return neighbours.filter(neighbour=> !neighbour.isVisited); //return array of neighbour nodes that havent been visited
     return neighbours; //return array of neighbour nodes that havent been visited
+}
+
+/**
+ * Function to organize the nodes that draw out the shortest path
+ */
+export function orderedAStarPath (finishNode){
+    const nodesInShortestPath = [];
+    let currentNode = finishNode; //setup initial node as the final node
+    while (currentNode!== null){ //while current node isn't start node
+        nodesInShortestPath.unshift(currentNode); //keep adding current node to front of array
+        currentNode = currentNode.previousNode; //update currentNode
+    }
+    return nodesInShortestPath;
 }

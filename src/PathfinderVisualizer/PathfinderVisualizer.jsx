@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import Node from './Node/Node';
 import './PathfinderVisualizer.scss';
 import {dijkstra, orderedShortestPath} from '../Algorithms/Dijkstras';
-import { aStar } from '../Algorithms/A_star';
+import { aStar, orderedAStarPath } from '../Algorithms/A_star';
 
 const START_NODE_ROW = 11;
 const START_NODE_COL = 10;
@@ -230,11 +230,18 @@ export default class PathfinderVisualizer extends Component {
     const startNode = this.getStartNode();
     const finishNode = this.getFinishNode();
     const visitedNodesInOrder = aStar(grid, startNode, finishNode);
-    this.animateAStar(visitedNodesInOrder);
+    const nodesInShortestPathOrder = orderedAStarPath(finishNode);
+    this.animateAStar(visitedNodesInOrder, nodesInShortestPathOrder);
 
   }
-  animateAStar (visitedNodesInOrder){
-    for (let i = 0; i <= visitedNodesInOrder.length-1; i++) {  
+  animateAStar (visitedNodesInOrder, nodesInShortestPathOrder){
+    for (let i = 0; i <= visitedNodesInOrder.length-1; i++) { 
+      if (i === visitedNodesInOrder.length-1) {
+        setTimeout(() => {
+          this.animateShortestPath(nodesInShortestPathOrder);
+        }, 3 * i);
+        return;
+      }  
       setTimeout(()=>{
         const node = visitedNodesInOrder[i];
         if (!node.isStart) document.getElementById(`node-${node.row}-${node.col}`).className = 'node node-visited';
