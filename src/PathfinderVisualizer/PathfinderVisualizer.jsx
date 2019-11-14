@@ -229,6 +229,7 @@ export default class PathfinderVisualizer extends Component {
     const {grid} = this.state;
     const startNode = this.getStartNode();
     const finishNode = this.getFinishNode();
+    this.minorResetGrid(grid);
     const visitedNodesInOrder = aStar(grid, startNode, finishNode);
     const nodesInShortestPathOrder = orderedAStarPath(finishNode);
     this.animateAStar(visitedNodesInOrder, nodesInShortestPathOrder);
@@ -325,6 +326,63 @@ export default class PathfinderVisualizer extends Component {
 
     return (
       <div>
+        <div id="openModal-about" class="modalDialog">
+            <div>
+              <a href="#close" title="Close" className="close">X</a>
+              {/* <h2> Welcome to PathFinder</h2>
+              <p>A pathfinding algorithm seeks to find the shortest path between two points. </p>
+              <p>This application visualizes various pathfinding algorithms in action. <br/> On this application, the algorithms are adapted for a 2D grid.</p>
+              <hr/>
+              <h4>Here are some instructions on how you could simulate the algorithms in action</h4> */}
+              <div class="cPanelContainer">
+
+<div className="cPanelHeader">
+  <h1>Welcome to PathFinder</h1>
+  <span>A pathfinding algorithm seeks to find the shortest path between two points.</span> <br/>
+  <span>This application visualizes various pathfinding algorithms in action on a 2D grid.</span>
+
+<h3>Instruction Guide</h3> 
+<hr/>
+<p>You can visualize of one of two algorithms:</p>
+<ul>
+<p> - &nbsp;<span>Dijkstra's Algorithm</span>  &nbsp; - &nbsp; The father of pathfinding algorithms; guarantees the shortest path</p>
+<p> - &nbsp;<span>A*'s Algorithm</span>  &nbsp; - &nbsp; Uses heuristics to guarantee the shortest path much faster than Dijkstra's</p>
+</ul> 
+<hr/>
+<p>You can add obstacles to the grid through multiple ways:</p>
+<ul>
+<p> - &nbsp;<span>Toggle</span>  &nbsp; - &nbsp; You can toggle obstacles on or off</p>
+<p> - &nbsp;<span>Obstacle options</span>  &nbsp; - &nbsp;  You can select between three different obstacle densities</p>
+<p> - &nbsp;<span>Draw obstacles</span>  &nbsp; - &nbsp;  You can click or click and drag to generate obstacles with the pointer</p>
+</ul> 
+
+<h3>Application Key</h3> 
+<hr/>
+<ul>
+<p> - &nbsp;<span>Nodes</span>  &nbsp; - &nbsp; A point in the grid</p>
+<p> - &nbsp;<span>Navy blue nodes</span>  &nbsp; - &nbsp; Obstacles</p>
+<p> - &nbsp;<span>Blue nodes</span>  &nbsp; - &nbsp; Nodes that have been considered as part of the part</p>
+<p> - &nbsp;<span>Yellow nodes</span>  &nbsp; - &nbsp; Nodes that are part of the final path</p>
+<p> - &nbsp;<span>Green node</span>  &nbsp; - &nbsp; The starting point</p>
+<p> - &nbsp;<span>Red node</span>  &nbsp; - &nbsp; The end point</p>
+<p> <b><span>Note</span>  &nbsp; - &nbsp;You can drag the start point (in green) and endpoint (in red) to your desired position</b></p>
+
+</ul> 
+</div>
+
+<div className="cPanelFooter">
+  <span>
+    For more information of the algorithms, check them out on the following links.
+  </span>
+  <ul>
+<a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">Dijkstra's Algorithm</a>
+<a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A* Algorithm</a>
+</ul>
+</div>
+
+</div>
+            </div>
+        </div>
         <nav>
         <div className="logo" onClick={() => this.resetGrid()}>
         PATH  <br/> FINDER 
@@ -358,10 +416,13 @@ export default class PathfinderVisualizer extends Component {
               <ul className="dd-menu">
                 <li onClick={() => this.changeObstacles()}>Change Obstacles</li>
                 <li onClick={() => this.changeDensity(0.095)}>Low Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.2)}>Medium Density Obstacles</li>
-                <li onClick={() => this.changeDensity(0.3)}>High Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.13)}>Medium Density Obstacles</li>
+                <li onClick={() => this.changeDensity(0.25)}>High Density Obstacles</li>
               </ul>
             </label>
+
+            <li> <a href="#openModal-about">Info</a> </li>  
+
           </ul>
       }</ul> <br/> 
 

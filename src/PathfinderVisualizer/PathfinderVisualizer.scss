@@ -1,3 +1,6 @@
+$midnight: #2c3e50;
+$clouds: #ecf0f1;
+
 .grid {
   
     height: calc(100vh-60px);
@@ -59,7 +62,6 @@
     margin: 0 0.7vw;
 }
 .nav-links li:hover {
-    color: #61DAFB;
     cursor: pointer;
 }
 .nav-links li {
@@ -77,6 +79,11 @@
 }
 .nav-links li:hover::after{
     width: 95%;
+}
+
+.dd-button{
+  margin-top: -8px;
+  padding: 0;
 }
 
 
@@ -226,4 +233,135 @@
 
 .dd-menu li:hover {
   background-color: #f6f6f6;
+}
+
+/*--MODAL--*/
+.modalDialog {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 99999;
+  opacity:0;
+  -webkit-transition: opacity 100ms ease-in;
+  -moz-transition: opacity 100ms ease-in;
+  transition: opacity 100ms ease-in;
+  pointer-events: none;
+  margin-top: -100px;
+  overflow-y: scroll;
+}
+.modalDialog:target {
+  opacity:1;
+  pointer-events: auto;
+}
+.modalDialog > div {
+  max-width: 800px;
+  width: 90%;
+  position: relative;
+  margin: 10% auto;
+  border-radius: 3px;
+}
+.close {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f26d7d;
+  color: #fff;
+  line-height: 25px;
+  position: absolute;
+  right: -12px;
+  text-align: center;
+  top: -10px;
+  width: 34px;
+  height: 34px;
+  text-decoration: none;
+  font-weight: bold;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  -moz-box-shadow: 1px 1px 3px #000;
+  -webkit-box-shadow: 1px 1px 3px #000;
+  box-shadow: 1px 1px 3px #000;
+  padding-top: 5px;
+}
+.close:hover {
+  background: #fa3f6f;
+}
+
+
+
+
+.cPanelContainer {
+  margin:auto;
+  padding:0;
+}
+
+.cPanelHeader {
+  margin:auto;
+  padding:50px 50px;
+  background:rgb(12, 53, 71);
+  text-align:center;
+}
+
+.cPanelHeader > h1 {
+  color:#f0f0f0;
+  font-weight:100;
+}
+.cPanelHeader > span {
+  color:#f0f0f0;
+  font-weight:100;
+  line-height: 25px;
+}
+
+.cPanelFooter {
+  margin:auto;
+  padding:50px;
+  background:rgb(12, 53, 71);
+  text-align:center;
+}
+
+.cPanelFooter > span {
+  color:#f0f0f0;
+  font-size:15px;
+  font-weight:400;
+}
+
+.cPanelContent {
+  margin:auto;
+  padding:0;
+  background:rgb(12, 53, 71);
+  text-align:center;
+  display:flex;
+}
+
+.cPanelHeader > h3 {
+  text-align: left;
+  color:#f0f0f0;
+  font-weight:400;
+  padding-top: 15px;
+  font-size: 22px;
+
+}
+
+.cPanelHeader > p {
+  // margin: auto;
+  text-align: left;
+  color:#f0f0f0;
+  font-weight:300;
+  line-height: 15px;
+  padding: 10px;
+  // padding-bottom: 10px;
+  font-size: 16px;
+}
+.cPanelHeader > ul > p {
+  // margin: auto;
+  text-align: left;
+  color:#f0f0f0;
+  font-size: 15px;
+  font-weight:100;
+  line-height: 16px;
+  padding-bottom: 5px;
+}
+.cPanelHeader > ul > p > span{
+  font-weight:400;
 }

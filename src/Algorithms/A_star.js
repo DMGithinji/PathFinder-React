@@ -33,18 +33,18 @@ export function aStar( grid, startNode, finishNode) {
             }
         });
         let currentNode = openSet[winner];
-
+        //remove currentNode from openSet and add it to closedSet
+        removeFromArray(openSet, currentNode);
+        closedSet.push(currentNode);
         //if currentNode is finishNode, solution found, reconstruct path
         if (currentNode === finishNode) {
             console.log("Done");
             return closedSet;
         }
 
-        //remove currentNode from openSet and add it to closedSet
-        removeFromArray(openSet, currentNode);
-        closedSet.push(currentNode); //add currentNode to closedSet
 
-        let neighbours = getNeighbours(currentNode, grid);
+
+        let neighbours = getNeighbours(currentNode, grid, closedSet);
 
         neighbours.forEach(neigh => {
             if(!closedSet.includes(neigh) && !neigh.isWall){
@@ -52,9 +52,9 @@ export function aStar( grid, startNode, finishNode) {
                 if(!openSet.includes(neigh)){
                     openSet.push(neigh);
                 } 
-                // else if (tentative_g_score >= neigh.g_cost){
-                //         console.log(neigh.g_cost); //continue
-                // }
+                else if (tentative_g_score >= neigh.g_cost){
+                    neigh.g_cost = tentative_g_score;
+                }
 
                 neigh.g_cost = tentative_g_score;
                 neigh.h_cost = heuristic(neigh, finishNode);
@@ -102,7 +102,7 @@ function calcF(startNode, finishNode, node) {
 /**
  * Function to get the surrounding neighbours of the current node that haven't been visited
  */
-function getNeighbours (node, grid) {
+function getNeighbours (node, grid, closedSet) {
     const neighbours = [];
     const {col, row} = node;
     if (col < grid[0].length-1) neighbours.push(grid[row][col+1]); //get right neighbour
@@ -114,8 +114,7 @@ function getNeighbours (node, grid) {
     // if (col > 0  &&  row < grid.length-1) neighbours.push(grid[row+1][col-1]); //get lower neighbour
     // if (col > 0 && row > 0) neighbours.push(grid[row - 1][col-1]); //get upper neighbour
     // if (col < grid[0].length-1 && row > 0)neighbours.push(grid[row-1][col+1]); //get left neighbour
-    // return neighbours.filter(neighbour=> !neighbour.isVisited); //return array of neighbour nodes that havent been visited
-    return neighbours; //return array of neighbour nodes that havent been visited
+    return neighbours.filter(neighbour=> !closedSet.includes(neighbour)); //return array of neighbour nodes that havent been visited
 }
 
 /**
