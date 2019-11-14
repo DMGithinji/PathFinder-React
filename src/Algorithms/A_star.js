@@ -110,10 +110,10 @@ function getNeighbours (node, grid, closedSet) {
     if (row > 0) neighbours.push(grid[row - 1][col]); //get upper neighbour
     if (col > 0) neighbours.push(grid[row][col-1]); //get left neighbour
 
-    if (col < grid[0].length-1 && row < grid.length-1) neighbours.push(grid[row+1][col+1]); //get right neighbour
-    if (col > 0  &&  row < grid.length-1) neighbours.push(grid[row+1][col-1]); //get lower neighbour
-    if (col > 0 && row > 0) neighbours.push(grid[row - 1][col-1]); //get upper neighbour
-    if (col < grid[0].length-1 && row > 0)neighbours.push(grid[row-1][col+1]); //get left neighbour
+    // if (col < grid[0].length-1 && row < grid.length-1) neighbours.push(grid[row+1][col+1]); //get right neighbour
+    // if (col > 0  &&  row < grid.length-1) neighbours.push(grid[row+1][col-1]); //get lower neighbour
+    // if (col > 0 && row > 0) neighbours.push(grid[row - 1][col-1]); //get upper neighbour
+    // if (col < grid[0].length-1 && row > 0)neighbours.push(grid[row-1][col+1]); //get left neighbour
     return neighbours.filter(neighbour=> !closedSet.includes(neighbour)); //return array of neighbour nodes that havent been visited
 }
 
